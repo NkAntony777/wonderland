@@ -31,12 +31,12 @@ if uploaded_image:
     with open(input_image_path, "wb") as f:
         f.write(uploaded_image.getbuffer())
 else:
-    input_image_path = f"images/content-images/{img}"
+    input_image_path = f"neural_style/images/content-images/{img}"
 
 # Define paths for selected images and models
-model_path = f"saved_models/{style_name}.pth"
-style_image_path = f"images/style-images/{style_name}.jpg"
-output_dir = "images/output-images"
+model_path = f"neural_style/saved_models/{style_name}.pth"
+style_image_path = f"neural_style/images/style-images/{style_name}.jpg"
+output_dir = "neural_style/images/output-images"
 os.makedirs(output_dir, exist_ok=True)
 timestamp = time.strftime("%Y%m%d-%H%M%S")
 output_image_path = f"{output_dir}/{style_name}-{os.path.basename(input_image_path)}-{timestamp}.jpg"
