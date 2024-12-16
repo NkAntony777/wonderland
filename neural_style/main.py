@@ -104,7 +104,7 @@ if clicked:
     try:
         with st.spinner('Stylizing image...'):
             # Load the model and stylize the image
-            model = style.load_model(model_path,weights_only=True)
+            model = style.load_model(model_path)
            
 
             style.stylize(model, input_image_path, output_image_path)
