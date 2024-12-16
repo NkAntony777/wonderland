@@ -1,9 +1,38 @@
-# Required imports
 import streamlit as st
 from PIL import Image
 import os
 import time
+import io
 import style  # Ensure the style module is properly implemented
+
+# Helper function to resize image and compress it under 1MB
+def compress_image(image, target_size_kb=1024):
+    """Compresses the image to be under target_size_kb in kilobytes."""
+    # Convert image to RGB mode (if necessary)
+    image = image.convert('RGB')
+    
+    # Define initial quality and size
+    quality = 90
+    while True:
+        # Save image to a byte buffer
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG", quality=quality)
+        buffer.seek(0)
+        
+        # Check the size of the image in bytes
+        size_in_kb = len(buffer.getvalue()) / 1024  # in KB
+        
+        # If the size is under the target size, break the loop
+        if size_in_kb <= target_size_kb:
+            return Image.open(buffer)
+        
+        # If the size is too large, reduce quality and try again
+        quality -= 5
+        if quality <= 50:  # Prevent it from going too low in quality
+            break
+
+    # Return the compressed image
+    return Image.open(buffer)
 
 # Centering the title using HTML
 st.markdown("<h1 style='text-align: center;'>Image Style Transfer</h1>", unsafe_allow_html=True)
@@ -30,8 +59,15 @@ if uploaded_image:
     os.makedirs("uploaded_images", exist_ok=True)
     with open(input_image_path, "wb") as f:
         f.write(uploaded_image.getbuffer())
+    
+    # Open the uploaded image
+    input_image = Image.open(input_image_path)
+    
+    # Compress image to be under 1MB
+    input_image = compress_image(input_image, target_size_kb=1024)  # target size is 1MB (1024KB)
 else:
     input_image_path = f"neural_style/images/content-images/{img}"
+    input_image = Image.open(input_image_path)
 
 # Define paths for selected images and models
 model_path = f"neural_style/saved_models/{style_name}.pth"
@@ -48,7 +84,6 @@ col1, col2 = st.columns(2)
 try:
     with col1:
         st.write("### Source Image")
-        input_image = Image.open(input_image_path)
         st.image(input_image, width=300)
 except Exception as e:
     st.error(f"Error loading source image: {e}")
