@@ -12,7 +12,7 @@ def compress_image(image, target_size_kb=1024):
     image = image.convert('RGB')
     
     # Define initial quality and size
-    quality = 90
+    quality = 70
     while True:
         # Save image to a byte buffer
         buffer = io.BytesIO()
@@ -28,7 +28,7 @@ def compress_image(image, target_size_kb=1024):
         
         # If the size is too large, reduce quality and try again
         quality -= 5
-        if quality <= 50:  # Prevent it from going too low in quality
+        if quality <= 30:  # Prevent it from going too low in quality
             break
 
     # Return the compressed image
@@ -104,7 +104,9 @@ if clicked:
     try:
         with st.spinner('Stylizing image...'):
             # Load the model and stylize the image
-            model = style.load_model(model_path)
+            model = style.load_model(model_path，weights_only=True)
+           
+
             style.stylize(model, input_image_path, output_image_path)
         st.success('Stylization complete!')
 
