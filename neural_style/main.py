@@ -12,7 +12,7 @@ def compress_image(image, target_size_kb=1024):
     image = image.convert('RGB')
     
     # Define initial quality and size
-    quality = 70
+    quality = 50
     while True:
         # Save image to a byte buffer
         buffer = io.BytesIO()
